@@ -35,8 +35,8 @@ Bugs and Feature Requests
 Feature Requests
 ----------------
 
-* Add custom icon support
-* Should probably use the JSON API instead of XML
+* Currently uses icons provided by OpenWeatherMap, but support for a set of custom icons would be great.
+* Should probably use the JSON API instead of XML.
 
 Known Bugs
 ----------
@@ -52,6 +52,11 @@ OpenWeatherMap
 ==============
 
 Information about OpenWeatherMap is available on [their website](http://openweathermap.org). Information about their API is available [here](http://openweathermap.org/api).
+
+Special Thanks
+==============
+
+This was [BCJ](https://github.com/bcj)'s idea.
 
 License Information
 ===================
