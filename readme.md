@@ -41,7 +41,7 @@ Feature Requests
 Known Bugs
 ----------
 
-None
+* Sometimes two forecasts right after each other will be very different...
 
 Slack
 =====

@@ -37,6 +37,8 @@ def main():
     parser.add_argument("-c", "--city", help="The city whose weather you would"
                         "like to check. Defaults to {}.".format(
                         config.DEFAULT_CITY), default=config.DEFAULT_CITY)
+    parser.add_argument("-n", "--notify", help="Tags the user (or @channel) in"
+                        " the message.", action="store_true")
     parser.add_argument("-t", "--terse", help="Delivers the weather with fewer"
                         "words.", action="store_true")
     args = parser.parse_args()
@@ -46,7 +48,7 @@ def main():
 
     for recipient in args.recipient:
         destination = determine_destination(recipient)
-        send_message(destination, message, icon)
+        send_message(destination, message, icon, args.notify)
 
 
 def determine_destination(destination):
@@ -173,7 +175,13 @@ def format_message(weather, terse):
     return message, icon
 
 
-def send_message(destination, message, icon):
+def send_message(destination, message, icon, notify=False):
+    if notify:
+        if destination[0] == "@" and destination not in message:
+            message += "\n" + destination
+        elif destination[0] == "#" and "@channel" not in message:
+            message += "\n@channel"
+
     payload = {"token": config.SLACK_TOKEN,
                "channel": destination,
                "username": config.SLACK_USER,
