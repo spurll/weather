@@ -40,7 +40,7 @@ def main():
     parser.add_argument("-n", "--notify", help="Tags the user (or @channel) in"
                         " the message.", action="store_true")
     parser.add_argument("-t", "--terse", help="Delivers the weather with fewer"
-                        "words.", action="store_true")
+                        " words.", action="store_true")
     args = parser.parse_args()
 
     weather = check_weather(args.city)
