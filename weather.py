@@ -21,7 +21,7 @@ MESSAGE = u"Today's temperature is expected to have a high of {high:.0f}"     \
           u"{cloud:.0f}% cloud cover."
 PRECIP = " It looks like {type} today, about {amount:.1f} millimetres."
 
-TERSE_MESSAGE = u"Temperature: {high:.0f}\u00B0C (H), {low:.0f}\u00B0C (L)\n" \
+TERSE_MESSAGE = u"High: {high:.0f}\u00B0C, Low: {low:.0f}\u00B0C\n" \
                 u"Wind: {wdir} {wspd:.0f} km/h\nCloud cover: {sky} "          \
                 u"({cloud:.0f}%)"
 TERSE_PRECIP = "\nPrecipitation: {amount:.1f} mm {type}"
