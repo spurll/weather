@@ -36,12 +36,11 @@ Feature Requests
 ----------------
 
 * Currently uses icons provided by OpenWeatherMap, but support for a set of custom icons would be great.
-* Should probably use the JSON API instead of XML.
 
 Known Bugs
 ----------
 
-* Sometimes two forecasts right after each other will be very different...
+None
 
 Slack
 =====
