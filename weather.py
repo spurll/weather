@@ -6,6 +6,7 @@
 
 from argparse import ArgumentParser
 from datetime import date
+from slackutils import Slack
 import requests, re
 
 import config
@@ -44,69 +45,9 @@ def main():
     weather = check_weather(args.city)
     message, icon = format_message(weather, args.terse)
 
+    s = Slack(config.SLACK_TOKEN, name=config.SLACK_USER, verbose=True)
     for recipient in args.recipient:
-        destination = determine_destination(recipient)
-        send_message(destination, message, icon, args.notify)
-
-
-def determine_destination(destination):
-    if destination[0] in ["#", "@"]:
-        return destination
-
-    candidates = []
-
-    pattern = re.compile(r"{}".format(destination), re.IGNORECASE)
-
-    for i in list_users() + list_channels():
-        match = re.search(pattern, i["name"])
-
-        # Users have a "real name" in addition to their user name.
-        if not match and "real" in i:
-            match = re.search(pattern, i["real"])
-
-        if match: candidates.append(i["id"])
-
-    if len(candidates) == 1:
-        return candidates[0]
-
-    if not candidates:
-        print 'Error: No users or channels named "{}".'.format(destination)
-    else:
-        print "Error: Unable to identify destination. Possible matches: {}"   \
-              .format(", ".join(candidates))
-
-    return None
-
-
-def list_users():
-    users = []
-
-    payload = {"token": config.SLACK_TOKEN}
-    r = requests.post("https://slack.com/api/users.list", data=payload)
-
-    if check_response(r):
-        users = [{"slack_id": m["id"],
-                  "id": "@{}".format(m["name"]),
-                  "name": m["name"],
-                  "real": m["real_name"]}
-                 for m in r.json()["members"]]
-
-    return users
-
-
-def list_channels():
-    channels = []
-
-    payload = {"token": config.SLACK_TOKEN, "exclude_archived": 1}
-    r = requests.post("https://slack.com/api/channels.list", data=payload)
-
-    if check_response(r):
-        channels = [{"slack_id": c["id"],
-                     "id": "#{}".format(c["name"]),
-                     "name": c["name"]}
-                    for c in r.json()["channels"]]
-
-    return channels
+        s.send(recipient, message, icon=icon, notify=args.notify)
 
 
 def check_weather(city):
@@ -160,39 +101,6 @@ def format_message(weather, terse):
         icon = None
 
     return message, icon
-
-
-def send_message(destination, message, icon, notify=False):
-    if notify:
-        if destination[0] == "@" and destination not in message:
-            message += "\n" + destination
-        elif destination[0] == "#" and "@channel" not in message:
-            message += "\n@channel"
-
-    payload = {"token": config.SLACK_TOKEN,
-               "channel": destination,
-               "username": config.SLACK_USER,
-               "icon_url": icon,
-               "link_names": 1,
-               "text": message}
-    r = requests.post("https://slack.com/api/chat.postMessage", data=payload)
-
-    if check_response(r):
-        print "Message delivered to {}.".format(destination)
-
-
-def check_response(r):
-    # Check the HTTP response.
-    if r.status_code != 200:
-        print "HTTP Code {}: {}".format(r.status_code, r.text)
-        return False
-
-    # Request was successful. Now check Slack's response.
-    if not r.json()["ok"]:
-        print "Slack Error: {}".format(r.json()["error"])
-        return False
-
-    return True
 
 
 def direction(degrees, terse):

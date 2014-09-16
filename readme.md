@@ -26,8 +26,8 @@ DEFAULT_CITY = 'Winnipeg'
 Requirements
 ------------
 
-* Slack (this one is sort of key)
 * requests
+* [slackutils](https://github.com/spurll/slackutils/)
 
 Bugs and Feature Requests
 =========================
